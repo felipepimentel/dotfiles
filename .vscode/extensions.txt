@@ -1,0 +1,6 @@
+ms-python.python
+esbenp.prettier-vscode
+dbaeumer.vscode-eslint
+ms-vscode.cpptools
+eamodio.gitlens
+pkief.material-icon-theme

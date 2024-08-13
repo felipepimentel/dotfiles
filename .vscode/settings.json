@@ -1,0 +1,9 @@
+{
+    "editor.fontSize": 14,
+    "editor.tabSize": 4,
+    "editor.wordWrap": "on",
+    "files.autoSave": "onFocusChange",
+    "terminal.integrated.fontSize": 14,
+    "workbench.colorTheme": "Visual Studio Dark",
+    "workbench.iconTheme": "vscode-icons"
+}

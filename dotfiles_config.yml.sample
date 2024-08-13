@@ -1,0 +1,62 @@
+# User settings
+user:
+  name: "Ada Lovelace"
+  email: "ada@analyticalengine.com"
+  username: "ada"
+
+# Git configuration
+git:
+  user_name: "${user.name}"
+  user_email: "${user.email}"
+  editor: "nvim"
+
+# System settings
+system:
+  timezone: "UTC"
+  keyboard_layout: "us"
+  preferred_shell: "zsh"
+
+# Dotfiles settings
+dotfiles:
+  directory: "$HOME/.dotfiles"
+  log_file: "$HOME/.dotfiles/install.log"
+
+# App settings
+apps:
+  install:
+    - neovim
+    - vscode
+    - obsidian
+    - calibre
+    - cursor_ide
+    - wezterm
+    - python
+    - docker
+    - chrome
+    - 1password
+    - zsh
+    - whatsapp
+    - fonts
+  vscode:
+    theme: "GitHub Dark"
+    font_family: "JetBrains Mono"
+    font_size: 13
+  terminal:
+    font_family: "FiraCode Nerd Font"
+    theme: "Dracula"
+
+# Development settings
+dev:
+  python:
+    version: "3.10.0"
+  node:
+    version: "16.13.0"
+
+# Backup settings
+backup:
+  enabled: true
+  directory: "$HOME/dotfiles_backup"
+
+# Security settings
+security:
+  use_1password: true

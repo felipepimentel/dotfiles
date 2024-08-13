@@ -1,0 +1,44 @@
+# Ignorar arquivos e diretórios específicos
+*.swp
+*.swo
+
+# Ignorar arquivos de backup
+*~
+
+# Ignorar arquivos de log
+*.log
+
+# Ignorar arquivos de cache
+.cache/
+
+# Ignorar arquivos gerados pelo sistema
+.DS_Store
+Thumbs.db
+
+# Ignorar arquivos de credenciais
+secrets.env
+
+# Ignorar arquivos de ambiente local
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Ignorar diretórios de dependências
+node_modules/
+vendor/
+
+# Ignorar arquivos de compilação
+build/
+dist/
+
+# Ignorar o arquivo de configuração real
+dotfiles_config.yml
+.cursorrules
+
+install.log
+
+.installation_control
+.gitconfig
+

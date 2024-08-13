@@ -1,0 +1,16 @@
+essential:
+  - curl
+  - wget
+  - git
+
+development:
+  - neovim
+  - vscode
+
+productivity:
+  - obsidian
+  - 1password
+
+system:
+  - zsh
+  - tilix
