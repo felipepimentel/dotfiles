@@ -25,6 +25,7 @@ path=(
   $HOME/.poetry/bin
   $HOME/.pyenv/bin
   /usr/local/bin
+  /usr/local/go/bin
   $path
 )
 export PATH
