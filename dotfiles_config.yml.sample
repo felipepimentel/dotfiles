@@ -1,62 +1,105 @@
 # User settings
 user:
-  name: "Ada Lovelace"
-  email: "ada@analyticalengine.com"
-  username: "ada"
-
-# Git configuration
-git:
-  user_name: "${user.name}"
-  user_email: "${user.email}"
-  editor: "nvim"
+  username: "your name"
+  home_directory: "/home/user name"
+  name: "your name"
+  email: "your name@mail.com"
 
 # System settings
 system:
-  timezone: "UTC"
-  keyboard_layout: "us"
+  timezone: "America/Sao_Paulo"
+  keyboard_layout: "br-abnt2"
   preferred_shell: "zsh"
 
-# Dotfiles settings
-dotfiles:
-  directory: "$HOME/.dotfiles"
-  log_file: "$HOME/.dotfiles/install.log"
+# Path settings
+paths:
+  dotfiles_directory: "/home/user name/.dotfiles"
+  log_file: "/home/user name/.dotfiles/install.log"
+  vault_directory: "/home/user name/ObsidianVault"
+  backup_directory: "/home/user name/dotfiles_backup"
+  desktop_directory: "/home/user name/.local/share/applications"
 
-# App settings
-apps:
-  install:
-    - neovim
-    - vscode
-    - obsidian
-    - calibre
-    - cursor_ide
-    - wezterm
-    - python
-    - docker
-    - chrome
-    - 1password
-    - zsh
-    - whatsapp
-    - fonts
-  vscode:
-    theme: "GitHub Dark"
-    font_family: "JetBrains Mono"
-    font_size: 13
-  terminal:
-    font_family: "FiraCode Nerd Font"
-    theme: "Dracula"
+# Applications and tools settings
+tools:
+  - name: "neovim"
+    dependencies:
+      - "apt"
+    configuration:
+      config_repo: "https://github.com/user/neovim-config.git"
 
-# Development settings
-dev:
-  python:
-    version: "3.10.0"
-  node:
-    version: "16.13.0"
+  - name: "vscode"
+    dependencies:
+      - "apt"
+    configuration:
+      theme: "GitHub Dark"
+      font_family: "JetBrains Mono"
+      font_size: 13
+
+  - name: "obsidian"
+    dependencies:
+      - "apt"
+    configuration:
+      vault_directory: "/home/user name/ObsidianVault"
+
+  - name: "calibre"
+    dependencies:
+      - "apt"
+
+  - name: "cursor_ide"
+    dependencies:
+      - "apt"
+
+  - name: "wezterm"
+    dependencies:
+      - "apt"
+
+  - name: "python"
+    dependencies:
+      - "apt"
+    configuration:
+      version: "3.10.0"
+
+  - name: "docker"
+    dependencies:
+      - "apt"
+    configuration:
+      compose_version: "v2"
+
+  - name: "chrome"
+    dependencies:
+      - "apt"
+
+  - name: "1password"
+    dependencies:
+      - "apt"
+
+  - name: "zsh"
+    dependencies:
+      - "apt"
+
+  - name: "whatsapp"
+    dependencies:
+      - "snap"
+
+  - name: "fonts"
+    dependencies:
+      - "manual"
+    configuration:
+      list:
+        - "FiraCode"
+        - "JetBrainsMono"
+
+  - name: "postman"
+    dependencies:
+      - "snap"
+    configuration:
+      create_desktop_icon: true
 
 # Backup settings
 backup:
   enabled: true
-  directory: "$HOME/dotfiles_backup"
+  directory: "/home/user name/dotfiles_backup"
 
 # Security settings
 security:
-  use_1password: true
+  tool: "1pass"
