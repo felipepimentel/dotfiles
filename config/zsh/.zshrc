@@ -42,3 +42,12 @@ eval "$(pyenv virtualenv-init -)"
 if [[ $TERM_PROGRAM == "iTerm.app" ]]; then
   p10k configure
 fi
+# pnpm
+export PNPM_HOME="/home/pimentel/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME:"*) ;;
+  *) export PATH="$PNPM_HOME:$PATH" ;;
+esac
+# pnpm end
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
