@@ -41,6 +41,10 @@ tools:
     configuration:
       vault_directory: "/home/user name/ObsidianVault"
 
+  - name: "microsoft-edge"
+    dependencies:
+      - "curl"
+
   - name: "calibre"
     dependencies:
       - "apt"
