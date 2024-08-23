@@ -35,6 +35,24 @@ eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
 eval "$(pyenv virtualenv-init -)"
 
+# Adicione isso ao seu .zshrc
+
+docker_clean() {
+    echo "🛠️ Removendo todos os contêineres..."
+    docker rm -f $(docker ps -a -q)
+
+    echo "🖼️ Removendo todas as imagens..."
+    docker rmi -f $(docker images -q)
+
+    echo "🔗 Removendo todas as redes não utilizadas..."
+    docker network prune -f
+
+    echo "📦 Removendo todos os volumes não utilizados..."
+    docker volume prune -f
+
+    echo "🧹 Docker limpo e espaço liberado!"
+}
+
 # Load Powerlevel10k configuration
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
@@ -51,3 +69,4 @@ esac
 # pnpm end
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
