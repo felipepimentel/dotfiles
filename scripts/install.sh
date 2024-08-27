@@ -142,21 +142,32 @@ install_tool() {
         fi
     done
 
-    if [ "$install_type" = "appimage" ]; then
-        local download_path="/tmp/${tool_name}_latest.AppImage"
-        log_message "Downloading $tool_name latest version..."
-        log_message "Download URL: $install_url"
-        wget -q --show-progress "$install_url" -O "$download_path" || { log_message "Error: Failed to download $tool_name"; return 1; }
-        log_message "Installing $tool_name..."
-        install_command="${install_command//\{download_path\}/$download_path}"
-        install_command="${install_command//\{install_path\}/$install_path}"
-        log_message "Executing install command: $install_command"
-        eval "$install_command" || { log_message "Error: Failed to install $tool_name"; return 1; }
-        rm -f "$download_path"
-    else
-        log_message "Unsupported install type: $install_type"
-        return 1
-    fi
+    case "$install_type" in
+        "appimage")
+            local download_path="/tmp/${tool_name}_latest.AppImage"
+            log_message "Downloading $tool_name latest version..."
+            log_message "Download URL: $install_url"
+            wget -q --show-progress "$install_url" -O "$download_path" || { log_message "Error: Failed to download $tool_name"; return 1; }
+            log_message "Installing $tool_name..."
+            install_command="${install_command//\{download_path\}/$download_path}"
+            install_command="${install_command//\{install_path\}/$install_path}"
+            log_message "Executing install command: $install_command"
+            eval "$install_command" || { log_message "Error: Failed to install $tool_name"; return 1; }
+            rm -f "$download_path"
+            ;;
+        "apt")
+            sudo apt-get update
+            sudo apt-get install -y $(echo "$tool_config" | yq eval '.configuration.package_name')
+            ;;
+        "script")
+            log_message "Downloading and executing installation script for $tool_name..."
+            eval "$install_command" || { log_message "Error: Failed to install $tool_name"; return 1; }
+            ;;
+        *)
+            log_message "Unsupported install type: $install_type"
+            return 1
+            ;;
+    esac
 
     # Configure desktop entry, if specified
     configure_desktop_entry "$tool_name"
@@ -202,10 +213,21 @@ configure_desktop_entry() {
         if [ -n "$icon_url" ]; then
             log_message "Downloading icon from $icon_url"
             wget -q "$icon_url" -O "$icon_path" || log_message "Error downloading icon for $tool_name"
-            if [ -f "$icon_path" ]; then
+            
+            # Check if the icon was downloaded successfully
+            if [ -f "$icon_path" ] && [ -s "$icon_path" ]; then
                 log_message "Icon downloaded successfully to $icon_path"
             else
-                log_message "Failed to download icon to $icon_path"
+                log_message "Failed to download icon to $icon_path. Retrying with curl..."
+                curl -L "$icon_url" -o "$icon_path" || log_message "Error downloading icon with curl"
+                
+                if [ -f "$icon_path" ] && [ -s "$icon_path" ]; then
+                    log_message "Icon downloaded successfully with curl to $icon_path"
+                else
+                    log_message "Failed to download icon. Using a default icon."
+                    # You can set a default icon path here if you have one
+                    # icon_path="/path/to/default/icon.png"
+                fi
             fi
         else
             log_message "Icon URL not provided for $tool_name"
