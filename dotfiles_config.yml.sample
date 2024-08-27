@@ -1,108 +1,243 @@
 # User settings
 user:
-  username: "your name"
-  home_directory: "/home/user name"
-  name: "your name"
-  email: "your name@mail.com"
+  username: "<your_username>"
+  home_directory: "/home/<your_username>"
+  name: "<Your Full Name>"
+  email: "<your_email@example.com>"
 
 # System settings
 system:
-  timezone: "America/Sao_Paulo"
-  keyboard_layout: "br-abnt2"
-  preferred_shell: "zsh"
+  timezone: "<your_timezone>"
+  keyboard_layout: "<your_keyboard_layout>"
+  preferred_shell: "<your_preferred_shell>"
 
 # Path settings
 paths:
-  dotfiles_directory: "/home/user name/.dotfiles"
-  log_file: "/home/user name/.dotfiles/install.log"
-  vault_directory: "/home/user name/ObsidianVault"
-  backup_directory: "/home/user name/dotfiles_backup"
-  desktop_directory: "/home/user name/.local/share/applications"
+  dotfiles_directory: "/home/<your_username>/.dotfiles"
+  log_file: "/home/<your_username>/.dotfiles/install.log"
+  vault_directory: "/home/<your_username>/<your_vault_directory>"
+  backup_directory: "/home/<your_username>/dotfiles_backup"
+  desktop_directory: "/home/<your_username>/.local/share/applications"
 
 # Applications and tools settings
 tools:
-  - name: "neovim"
-    dependencies:
-      - "apt"
-    configuration:
-      config_repo: "https://github.com/user/neovim-config.git"
+  default_install_method: "apt"
+  tools_list:
+    - name: "cursor_ide"
+      dependencies:
+        - "wget"
+      configuration:
+        install_type: "appimage"
+        install_url: "https://downloader.cursor.sh/linux/appImage/x64"
+        install_path: "/usr/local/bin/cursor"
+        check_installed: "[ -f /usr/local/bin/cursor ]"
+        get_installed_version: "/usr/local/bin/cursor --version 2>/dev/null | awk '{print $2}' || echo 'Not installed'"
+        install_command: "sudo mv {download_path} {install_path} && sudo chmod +x {install_path}"
+        icon_url: "https://github.com/getcursor/docs/blob/main/images/logo/logo-transparent.png?raw=true"
+        desktop_entry:
+          name: "Cursor IDE"
+          comment: "Cursor is an AI-first code editor"
+          exec: "/usr/local/bin/cursor"
+          categories: "Development;IDE;"
+          startup_wm_class: "Cursor"
+      pre_install: "echo 'Preparing to install Cursor IDE...'"
+      post_install: "echo 'Cursor IDE installation completed.'"
 
-  - name: "vscode"
-    dependencies:
-      - "apt"
-    configuration:
-      theme: "GitHub Dark"
-      font_family: "JetBrains Mono"
-      font_size: 13
+    - name: "calibre"
+      dependencies:
+        - "wget"
+      configuration:
+        install_type: "script"
+        install_url: "https://download.calibre-ebook.com/linux-installer.sh"
+        check_installed: "dpkg -l | grep -q 'calibre'"
+        get_installed_version: "calibre --version | awk '{print $3}'"
+        install_command: "sudo -v && wget -nv -O- {install_url} | sudo sh /dev/stdin"
+      pre_install: "echo 'Preparing to install Calibre...'"
+      post_install: "sudo apt-get install -y libxcb-cursor0"
 
-  - name: "obsidian"
-    dependencies:
-      - "apt"
-    configuration:
-      vault_directory: "/home/user name/ObsidianVault"
+    - name: "edge"
+      dependencies:
+        - "curl"
+        - "gpg"
+      configuration:
+        install_type: "apt"
+        repo_key_url: "https://packages.microsoft.com/keys/microsoft.asc"
+        repo_entry: "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main"
+        package_name: "microsoft-edge-stable"
+        check_installed: "dpkg -l | grep -q microsoft-edge-stable"
+        get_installed_version: "microsoft-edge --version | awk '{print $3}'"
+      pre_install: |
+        curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+        sudo install -o root -g root -m 644 microsoft.gpg /etc/apt/trusted.gpg.d/
+        sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main" > /etc/apt/sources.list.d/microsoft-edge.list'
+        rm microsoft.gpg
+      post_install: "echo 'Microsoft Edge installation completed.'"
 
-  - name: "microsoft-edge"
-    dependencies:
-      - "curl"
+    - name: "docker"
+      dependencies:
+        - "curl"
+        - "gnupg"
+        - "lsb-release"
+      configuration:
+        install_type: "apt"
+        repo_key_url: "https://download.docker.com/linux/ubuntu/gpg"
+        repo_entry: "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+        package_name: "docker-ce docker-ce-cli containerd.io"
+        check_installed: "command -v docker &> /dev/null"
+        get_installed_version: "docker --version | awk '{print $3}' | sed 's/,//'"
+      pre_install: |
+        sudo apt-get remove docker docker-engine docker.io containerd runc
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+      post_install: |
+        sudo usermod -aG docker $USER
+        echo "Docker installed successfully. You may need to log out and log back in for group permissions to take effect."
 
-  - name: "calibre"
-    dependencies:
-      - "apt"
+    - name: "neovim"
+      dependencies: []
+      configuration:
+        install_type: "apt"
+        package_name: "neovim"
+        check_installed: "command -v nvim &> /dev/null"
+        get_installed_version: "nvim --version | head -n 1 | awk '{print $2}'"
+      pre_install: "echo 'Preparing to install Neovim...'"
+      post_install: "echo 'Neovim installation completed.'"
 
-  - name: "cursor_ide"
-    dependencies:
-      - "apt"
+    - name: "zsh"
+      dependencies:
+        - "curl"
+        - "git"
+      configuration:
+        install_type: "apt"
+        package_name: "zsh"
+        check_installed: "command -v zsh &> /dev/null"
+        get_installed_version: "zsh --version | awk '{print $2}'"
+      pre_install: "echo 'Preparing to install Zsh...'"
+      post_install: |
+        sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended
+        git clone --depth=1 https://github.com/romkatv/powerlevel10k.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/themes/powerlevel10k
+        git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-syntax-highlighting
+        git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+        ln -sf "$HOME/.dotfiles/config/zsh/.zshrc" "$HOME/.zshrc"
+        chsh -s $(which zsh)
+        echo "Zsh, Oh My Zsh, and Powerlevel10k installation and configuration completed."
 
-  - name: "wezterm"
-    dependencies:
-      - "apt"
+    - name: "postman"
+      dependencies:
+        - "snapd"
+      configuration:
+        install_type: "snap"
+        package_name: "postman"
+        check_installed: "snap list | grep -q postman"
+        get_installed_version: "snap list postman | awk 'NR==2 {print $3}'"
+        create_desktop_icon: true
+      pre_install: "sudo apt-get update && sudo apt-get install -y snapd"
+      post_install: "echo 'Postman installation completed.'"
 
-  - name: "python"
-    dependencies:
-      - "apt"
-    configuration:
-      version: "3.10.0"
+    - name: "python"
+      dependencies: []
+      configuration:
+        install_type: "apt"
+        package_name: "python3 python3-pip python3-venv"
+        check_installed: "command -v python3 &> /dev/null"
+        get_installed_version: "python3 --version | awk '{print $2}'"
+      pre_install: "echo 'Preparing to install Python...'"
+      post_install: "echo 'Python installation completed.'"
 
-  - name: "docker"
-    dependencies:
-      - "apt"
-    configuration:
-      compose_version: "v2"
+    - name: "vscode"
+      dependencies: []
+      configuration:
+        install_type: "apt"
+        package_name: "code"
+        check_installed: "command -v code &> /dev/null"
+        get_installed_version: "code --version | head -n 1"
+        theme: "Dark+"
+        font_family: "Fira Code"
+        font_size: 14
+      pre_install: |
+        wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+        sudo install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/
+        sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+        rm -f packages.microsoft.gpg
+      post_install: "echo 'VS Code installation completed.'"
 
-  - name: "chrome"
-    dependencies:
-      - "apt"
+    - name: "whatsapp"
+      dependencies: []
+      configuration:
+        install_type: "deb"
+        install_url: "https://github.com/enesbcs/whatsapp-for-linux/releases/download/v1.1.0/whatsapp-for-linux_amd64.deb"
+        install_path: "/tmp/whatsapp.deb"
+        check_installed: "dpkg -l | grep -q 'whatsapp-for-linux'"
+        get_installed_version: "dpkg -l | grep whatsapp-for-linux | awk '{print $3}'"
+      pre_install: "echo 'Preparing to install WhatsApp...'"
+      post_install: "echo 'WhatsApp installation completed.'"
 
-  - name: "1password"
-    dependencies:
-      - "apt"
+    - name: "opentofu"
+      dependencies:
+        - "curl"
+      configuration:
+        install_type: "script"
+        install_url: "https://get.opentofu.org/install-opentofu.sh"
+        install_command: "./install-opentofu.sh --install-method deb"
+        check_installed: "command -v tofu &> /dev/null"
+        get_installed_version: "tofu version | head -n 1 | awk '{print $2}'"
+      pre_install: "echo 'Preparing to install OpenTofu...'"
+      post_install: "rm -f install-opentofu.sh"
 
-  - name: "zsh"
-    dependencies:
-      - "apt"
+    - name: "obsidian"
+      dependencies: []
+      configuration:
+        install_type: "deb"
+        install_url: "https://github.com/obsidianmd/obsidian-releases/releases/download/v1.3.4/obsidian_1.3.4_amd64.deb"
+        install_path: "/tmp/obsidian.deb"
+        check_installed: "dpkg -l | grep -q obsidian"
+        get_installed_version: "dpkg -l | grep obsidian | awk '{print $3}'"
+      pre_install: "echo 'Preparing to install Obsidian...'"
+      post_install: "echo 'Obsidian installation completed.'"
 
-  - name: "whatsapp"
-    dependencies:
-      - "snap"
+    - name: "github"
+      dependencies:
+        - "git"
+        - "software-properties-common"
+      configuration:
+        install_type: "apt"
+        package_name: "gh"
+        check_installed: "command -v gh &> /dev/null"
+        get_installed_version: "gh --version | head -n 1 | awk '{print $3}'"
+      pre_install: |
+        sudo apt-get install -y software-properties-common
+        sudo add-apt-repository -y ppa:git-core/ppa
+      post_install: "echo 'GitHub CLI installation completed.'"
 
-  - name: "fonts"
-    dependencies:
-      - "manual"
-    configuration:
-      list:
-        - "FiraCode"
-        - "JetBrainsMono"
+    - name: "1password"
+      dependencies:
+        - "curl"
+      configuration:
+        install_type: "apt"
+        package_name: "1password-cli 1password"
+        check_installed: "command -v op &> /dev/null && command -v 1password &> /dev/null"
+        get_installed_version: "op --version"
+      pre_install: |
+        curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo apt-key add -
+        echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/$(lsb_release -cs) $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/1password.list
+      post_install: "echo '1Password and 1Password CLI installation completed.'"
 
-  - name: "postman"
-    dependencies:
-      - "snap"
-    configuration:
-      create_desktop_icon: true
+    - name: "fonts"
+      dependencies:
+        - "unzip"
+        - "fontconfig"
+      configuration:
+        install_type: "custom"
+        font_dir: "$HOME/.local/share/fonts"
+        fira_code_url: "https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"
+        check_installed: "fc-list | grep -q 'Fira Code'"
+        get_installed_version: "echo 'Installed'"
+      pre_install: "mkdir -p $HOME/.local/share/fonts"
+      post_install: "fc-cache -f -v"
 
 # Backup settings
 backup:
-  enabled: true
-  directory: "/home/user name/dotfiles_backup"
+  enabled: false
+  directory: "/home/<your_username>/dotfiles_backup"
 
 # Security settings
 security:

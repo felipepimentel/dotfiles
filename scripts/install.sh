@@ -159,9 +159,32 @@ install_tool() {
             sudo apt-get update
             sudo apt-get install -y $(echo "$tool_config" | yq eval '.configuration.package_name')
             ;;
+        "snap")
+            sudo snap install $(echo "$tool_config" | yq eval '.configuration.package_name')
+            ;;
+        "deb")
+            wget -q --show-progress "$install_url" -O "$install_path" || { log_message "Error: Failed to download $tool_name"; return 1; }
+            sudo dpkg -i "$install_path" || sudo apt-get install -f -y
+            rm -f "$install_path"
+            ;;
         "script")
-            log_message "Downloading and executing installation script for $tool_name..."
+            wget -q --show-progress "$install_url" -O "install_${tool_name}.sh" || { log_message "Error: Failed to download $tool_name install script"; return 1; }
+            chmod +x "install_${tool_name}.sh"
             eval "$install_command" || { log_message "Error: Failed to install $tool_name"; return 1; }
+            ;;
+        "custom")
+            # Custom installation for fonts
+            if [ "$tool_name" = "fonts" ]; then
+                local font_dir=$(echo "$tool_config" | yq eval '.configuration.font_dir')
+                local fira_code_url=$(echo "$tool_config" | yq eval '.configuration.fira_code_url')
+                wget -q --show-progress "$fira_code_url" -O /tmp/firacode.zip
+                unzip -o /tmp/firacode.zip -d /tmp/firacode
+                cp /tmp/firacode/ttf/*.ttf "$font_dir/"
+                rm -rf /tmp/firacode /tmp/firacode.zip
+            else
+                log_message "Unsupported custom install type for $tool_name"
+                return 1
+            fi
             ;;
         *)
             log_message "Unsupported install type: $install_type"
