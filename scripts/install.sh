@@ -51,19 +51,20 @@ run_hook() {
     fi
 }
 
-# Função para criar symlinks
+# Função para criar symlinks para arquivos ".", como .zshrc, .vimrc, etc.
 create_symlinks() {
     local module_dir="$1"
-    local symlink_dir="$module_dir/linked_files"
     
-    if [ -d "$symlink_dir" ]; then
-        for file in "$symlink_dir/"*; do
-            if [ -f "$file" ]; then
-                ln -sf "$file" "$HOME/$(basename "$file")"
-                log "Criado symlink para $(basename "$file")"
-            fi
-        done
-    fi
+    for file in "$module_dir"/.*; do
+        # Ignora . e ..
+        [ "$file" = "$module_dir/." ] || [ "$file" = "$module_dir/.." ] && continue
+        
+        if [ -f "$file" ]; then
+            local target="$HOME/$(basename "$file")"
+            ln -sf "$file" "$target"
+            log "Criado symlink para $(basename "$file")"
+        fi
+    done
 }
 
 # Carregar perfis de instalação do arquivo de configuração
@@ -113,7 +114,7 @@ for tool in "${TOOLS[@]}"; do
         # Executar hook pré-instalação
         run_hook "$tool" "pre_install"
 
-        # Criar symlinks para arquivos em linked_files
+        # Criar symlinks para arquivos "."
         create_symlinks "$tool_dir"
 
         # Executar o setup para injeção de configurações
