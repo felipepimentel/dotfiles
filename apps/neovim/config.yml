@@ -1,5 +1,7 @@
 name: "neovim"
-dependencies: []
+dependencies:
+  - "git"
+  - "make"
 config:
   install_type: "apt"
   package_name: "neovim"

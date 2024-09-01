@@ -34,7 +34,6 @@ build/
 dist/
 
 # Ignorar o arquivo de configuração real
-dotfiles_config.yml
 .cursorrules
 
 install.log
