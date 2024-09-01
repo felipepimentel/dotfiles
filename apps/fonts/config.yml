@@ -1,0 +1,13 @@
+name: "fonts"
+dependencies:
+  - "unzip"
+  - "fontconfig"
+config:
+  install_type: "custom"
+  font_dir: "$HOME/.local/share/fonts"
+  fira_code_url: "https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"
+  check_installed: "fc-list | grep -q 'Fira Code'"
+  get_installed_version: "echo 'Installed'"
+pre_install: "mkdir -p $HOME/.local/share/fonts"
+post_install: "fc-cache -f -v"
+override_install: false

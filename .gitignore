@@ -42,3 +42,4 @@ install.log
 .installation_control
 .gitconfig
 
+.dotfiles_state.yml

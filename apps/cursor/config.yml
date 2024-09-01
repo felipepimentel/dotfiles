@@ -1,0 +1,19 @@
+name: "cursor"
+dependencies:
+  - "wget"
+config:
+  install_type: "appimage"
+  install_url: "https://downloader.cursor.sh/linux/appImage/x64"
+  install_path: "/usr/local/bin/cursor"
+  check_installed: "[ -f /usr/local/bin/cursor ]"
+  get_installed_version: "/usr/local/bin/cursor --version 2>/dev/null | awk '{print $2}' || echo 'Not installed'"
+  icon_url: "https://github.com/getcursor/docs/blob/main/images/logo/logo-transparent.png?raw=true"
+  desktop_entry:
+    name: "Cursor IDE"
+    comment: "Cursor is an AI-first code editor"
+    exec: "/usr/local/bin/cursor"
+    categories: "Development;IDE;"
+    startup_wm_class: "Cursor"
+pre_install: "echo 'Preparing to install Cursor IDE...'"
+post_install: "echo 'Cursor IDE installation completed.'"
+override_install: false

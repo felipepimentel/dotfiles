@@ -26,7 +26,7 @@ tools:
     - name: "cursor_ide"
       dependencies:
         - "wget"
-      configuration:
+      config:
         install_type: "appimage"
         install_url: "https://downloader.cursor.sh/linux/appImage/x64"
         install_path: "/usr/local/bin/cursor"
@@ -46,7 +46,7 @@ tools:
     - name: "calibre"
       dependencies:
         - "wget"
-      configuration:
+      config:
         install_type: "script"
         install_url: "https://download.calibre-ebook.com/linux-installer.sh"
         check_installed: "dpkg -l | grep -q 'calibre'"
@@ -59,7 +59,7 @@ tools:
       dependencies:
         - "curl"
         - "gpg"
-      configuration:
+      config:
         install_type: "apt"
         repo_key_url: "https://packages.microsoft.com/keys/microsoft.asc"
         repo_entry: "deb [arch=amd64] https://packages.microsoft.com/repos/edge stable main"
@@ -78,7 +78,7 @@ tools:
         - "curl"
         - "gnupg"
         - "lsb-release"
-      configuration:
+      config:
         install_type: "apt"
         repo_key_url: "https://download.docker.com/linux/ubuntu/gpg"
         repo_entry: "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
@@ -94,7 +94,7 @@ tools:
 
     - name: "neovim"
       dependencies: []
-      configuration:
+      config:
         install_type: "apt"
         package_name: "neovim"
         check_installed: "command -v nvim &> /dev/null"
@@ -106,7 +106,7 @@ tools:
       dependencies:
         - "curl"
         - "git"
-      configuration:
+      config:
         install_type: "apt"
         package_name: "zsh"
         check_installed: "command -v zsh &> /dev/null"
@@ -119,12 +119,12 @@ tools:
         git clone https://github.com/zsh-users/zsh-autosuggestions.git ${ZSH_CUSTOM:-$HOME/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
         ln -sf "$HOME/.dotfiles/config/zsh/.zshrc" "$HOME/.zshrc"
         chsh -s $(which zsh)
-        echo "Zsh, Oh My Zsh, and Powerlevel10k installation and configuration completed."
+        echo "Zsh, Oh My Zsh, and Powerlevel10k installation and config completed."
 
     - name: "postman"
       dependencies:
         - "snapd"
-      configuration:
+      config:
         install_type: "snap"
         package_name: "postman"
         check_installed: "snap list | grep -q postman"
@@ -135,7 +135,7 @@ tools:
 
     - name: "python"
       dependencies: []
-      configuration:
+      config:
         install_type: "apt"
         package_name: "python3 python3-pip python3-venv"
         check_installed: "command -v python3 &> /dev/null"
@@ -145,7 +145,7 @@ tools:
 
     - name: "vscode"
       dependencies: []
-      configuration:
+      config:
         install_type: "apt"
         package_name: "code"
         check_installed: "command -v code &> /dev/null"
@@ -162,7 +162,7 @@ tools:
 
     - name: "whatsapp"
       dependencies: []
-      configuration:
+      config:
         install_type: "deb"
         install_url: "https://github.com/enesbcs/whatsapp-for-linux/releases/download/v1.1.0/whatsapp-for-linux_amd64.deb"
         install_path: "/tmp/whatsapp.deb"
@@ -174,7 +174,7 @@ tools:
     - name: "opentofu"
       dependencies:
         - "curl"
-      configuration:
+      config:
         install_type: "script"
         install_url: "https://get.opentofu.org/install-opentofu.sh"
         install_command: "./install-opentofu.sh --install-method deb"
@@ -185,7 +185,7 @@ tools:
 
     - name: "obsidian"
       dependencies: []
-      configuration:
+      config:
         install_type: "deb"
         install_url: "https://github.com/obsidianmd/obsidian-releases/releases/download/v1.3.4/obsidian_1.3.4_amd64.deb"
         install_path: "/tmp/obsidian.deb"
@@ -198,7 +198,7 @@ tools:
       dependencies:
         - "git"
         - "software-properties-common"
-      configuration:
+      config:
         install_type: "apt"
         package_name: "gh"
         check_installed: "command -v gh &> /dev/null"
@@ -211,7 +211,7 @@ tools:
     - name: "1password"
       dependencies:
         - "curl"
-      configuration:
+      config:
         install_type: "apt"
         package_name: "1password-cli 1password"
         check_installed: "command -v op &> /dev/null && command -v 1password &> /dev/null"
@@ -225,7 +225,7 @@ tools:
       dependencies:
         - "unzip"
         - "fontconfig"
-      configuration:
+      config:
         install_type: "custom"
         font_dir: "$HOME/.local/share/fonts"
         fira_code_url: "https://github.com/tonsky/FiraCode/releases/download/6.2/Fira_Code_v6.2.zip"

@@ -1,0 +1,13 @@
+name: "1password"
+dependencies:
+  - "curl"
+config:
+  install_type: "apt"
+  package_name: "1password-cli 1password"
+  check_installed: "command -v op &> /dev/null && command -v 1password &> /dev/null"
+  get_installed_version: "op --version"
+pre_install: |
+  curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo apt-key add -
+  echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/$(lsb_release -cs) $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/1password.list
+post_install: "echo '1Password and 1Password CLI installation completed.'"
+override_install: false

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Caminho para o script de instalação
+INSTALL_SCRIPT="$SCRIPT_DIR/install.sh"
+
+# Execute o script de instalação
+if $INSTALL_SCRIPT; then
+    echo "Install script executed successfully. Proceeding with commit."
+else
+    echo "Install script failed. Aborting commit."
+    exit 1
+fi

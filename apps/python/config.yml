@@ -1,0 +1,10 @@
+name: "python"
+dependencies: []
+config:
+  install_type: "apt"
+  package_name: "python3 python3-pip python3-venv"
+  check_installed: "command -v python3 &> /dev/null"
+  get_installed_version: "python3 --version | awk '{print $2}'"
+pre_install: "echo 'Preparing to install Python...'"
+post_install: "echo 'Python installation completed.'"
+override_install: false

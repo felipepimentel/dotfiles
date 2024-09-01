@@ -1,0 +1,8 @@
+# apps/go/config.yml
+
+# Configurações Específicas do Go
+paths:
+  - "/usr/local/go/bin"
+
+# Outras configurações
+version: "1.17"

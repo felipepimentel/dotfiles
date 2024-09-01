@@ -1,0 +1,19 @@
+name: "docker"
+dependencies:
+  - "curl"
+  - "gnupg"
+  - "lsb-release"
+config:
+  install_type: "apt"
+  repo_key_url: "https://download.docker.com/linux/ubuntu/gpg"
+  repo_entry: "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+  package_name: "docker-ce docker-ce-cli containerd.io"
+  check_installed: "command -v docker &> /dev/null"
+  get_installed_version: "docker --version | awk '{print $3}' | sed 's/,//'"
+pre_install: |
+  sudo apt-get remove docker docker-engine docker.io containerd runc
+  curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+post_install: |
+  sudo usermod -aG docker $USER
+  echo "Docker installed successfully. You may need to log out and log back in for group permissions to take effect."
+override_install: false

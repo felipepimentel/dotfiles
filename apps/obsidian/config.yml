@@ -1,0 +1,11 @@
+name: "obsidian"
+dependencies: []
+config:
+  install_type: "deb"
+  install_url: "https://github.com/obsidianmd/obsidian-releases/releases/download/v1.3.4/obsidian_1.3.4_amd64.deb"
+  install_path: "/tmp/obsidian.deb"
+  check_installed: "dpkg -l | grep -q obsidian"
+  get_installed_version: "dpkg -l | grep obsidian | awk '{print $3}'"
+pre_install: "echo 'Preparing to install Obsidian...'"
+post_install: "echo 'Obsidian installation completed.'"
+override_install: false

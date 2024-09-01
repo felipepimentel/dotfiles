@@ -1,0 +1,8 @@
+# apps/poetry/config.yml
+
+# Configurações Específicas do Poetry
+paths:
+  - "$HOME/.poetry/bin"
+
+# Outras configurações
+version: "1.1.11"

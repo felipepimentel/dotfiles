@@ -2,11 +2,11 @@
 
 ⚠️ **WARNING: This project is under construction and may contain instabilities.** ⚠️
 
-This repository contains my personal dotfiles and configuration scripts to quickly set up a new development environment.
+This repository contains my personal dotfiles and config scripts to quickly set up a new development environment.
 
 ## Overview
 
-This project includes configurations for:
+This project includes configs for:
 
 - Zsh (with Oh My Zsh and Powerlevel10k)
 - Neovim
@@ -38,9 +38,9 @@ bash scripts/install.sh
 
 3. Follow the installation script's instructions to set up your development environment.
 
-## Configuration
+## config
 
-The installation script uses the `dotfiles_config.yml` file to get user-specific configurations. You can edit this file to customize the configurations according to your needs.
+The installation script uses the `dotfiles_config.yml` file to get user-specific configs. You can edit this file to customize the configs according to your needs.
 
 ## Installation Scripts
 

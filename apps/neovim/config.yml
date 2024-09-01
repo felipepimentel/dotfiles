@@ -1,0 +1,10 @@
+name: "neovim"
+dependencies: []
+config:
+  install_type: "apt"
+  package_name: "neovim"
+  check_installed: "command -v nvim &> /dev/null"
+  get_installed_version: "nvim --version | head -n 1 | awk '{print $2}'"
+pre_install: "echo 'Preparing to install Neovim...'"
+post_install: "echo 'Neovim installation completed.'"
+override_install: false

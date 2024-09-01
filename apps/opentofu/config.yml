@@ -1,0 +1,12 @@
+name: "opentofu"
+dependencies:
+  - "curl"
+config:
+  install_type: "script"
+  install_url: "https://get.opentofu.org/install-opentofu.sh"
+  install_command: "./install-opentofu.sh --install-method deb"
+  check_installed: "command -v tofu &> /dev/null"
+  get_installed_version: "tofu version | head -n 1 | awk '{print $2}'"
+pre_install: "echo 'Preparing to install OpenTofu...'"
+post_install: "rm -f install-opentofu.sh"
+override_install: false

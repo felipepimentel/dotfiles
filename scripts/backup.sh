@@ -29,5 +29,5 @@ if [ "$BACKUP_ENABLED" = "true" ]; then
 
     log_message "Backup completed in $BACKUP_DIR"
 else
-    log_message "Backup is disabled in the configuration. Skipping..."
+    log_message "Backup is disabled in the config. Skipping..."
 fi

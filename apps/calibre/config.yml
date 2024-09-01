@@ -1,0 +1,12 @@
+name: "calibre"
+dependencies:
+  - "wget"
+config:
+  install_type: "script"
+  install_url: "https://download.calibre-ebook.com/linux-installer.sh"
+  check_installed: "dpkg -l | grep -q 'calibre'"
+  get_installed_version: "calibre --version | awk '{print $3}'"
+  install_command: "sudo -v && wget -nv -O- {install_url} | sudo sh /dev/stdin"
+pre_install: "echo 'Preparing to install Calibre...'"
+post_install: "sudo apt-get install -y libxcb-cursor0"
+override_install: false

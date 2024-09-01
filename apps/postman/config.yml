@@ -1,0 +1,11 @@
+name: "postman"
+dependencies:
+  - "snapd"
+config:
+  install_type: "snap"
+  package_name: "postman"
+  check_installed: "snap list | grep -q postman"
+  get_installed_version: "snap list postman | awk 'NR==2 {print $3}'"
+pre_install: "sudo apt-get update && sudo apt-get install -y snapd"
+post_install: "echo 'Postman installation completed.'"
+override_install: false

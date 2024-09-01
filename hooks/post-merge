@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Execute o script de instalação novamente após o merge
+$SCRIPT_DIR/install.sh

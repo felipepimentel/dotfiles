@@ -1,0 +1,6 @@
+# Configurações Específicas do Zsh
+theme: "powerlevel10k/powerlevel10k"
+plugins:
+  - git
+  - zsh-syntax-highlighting
+  - zsh-autosuggestions

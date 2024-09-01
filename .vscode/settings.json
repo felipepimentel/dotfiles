@@ -5,5 +5,13 @@
     "files.autoSave": "onFocusChange",
     "terminal.integrated.fontSize": 14,
     "workbench.colorTheme": "Visual Studio Dark",
-    "workbench.iconTheme": "vscode-icons"
+    "workbench.iconTheme": "vscode-icons",
+    "files.exclude": {
+        "**/.git": false,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/Thumbs.db": true
+    }
 }
