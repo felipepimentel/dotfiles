@@ -18,25 +18,17 @@ paths:
 
 # Applications and tools settings
 tools:
-  default_install_method: "apt"
-
-# Profiles
-profiles:
-  core:
+  apps:
     - zsh
     - git
-  developer:
     - vscode
     - python
     - poetry
     - docker
     - vim
-    - docker
-  designer:
-    - zsh
     - figma
     - inkscape
-    - gimp  
+    - gimp
 
 # Security settings
 security:

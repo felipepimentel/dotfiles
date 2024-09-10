@@ -3,7 +3,7 @@
 set -euo pipefail
 
 DOTFILES_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-source "$DOTFILES_DIR/scripts/helpers/utils.sh"
+source "$DOTFILES_DIR/scripts/utils.sh"
 
 main() {
     local log_file
