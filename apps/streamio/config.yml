@@ -1,0 +1,9 @@
+name: "streamio"
+dependencies: []
+config:
+  install_type: "flatpak"
+  package_name: "com.stremio.Stremio"
+  check_installed: "flatpak list | grep com.stremio.Stremio"
+pre_install: "echo 'Preparing to install Streamio via Flatpak...'"
+post_install: "echo 'Streamio successfully installed via Flatpak.'"
+override_install: false

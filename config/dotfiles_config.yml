@@ -2,8 +2,6 @@
 user:
   username: "pimentel"
   home_directory: "/home/pimentel"
-  name: "Felipe Pimentel"
-  email: "fpimentel88@gmail.com"
 
 # System settings
 system:
@@ -13,23 +11,8 @@ system:
 paths:
   dotfiles_directory: "/home/pimentel/.dotfiles"
   log_file: "/home/pimentel/.dotfiles/install.log"
-  vault_directory: "/home/pimentel/ObsidianVault"
-  desktop_directory: "/home/pimentel/.local/share/applications"
 
-# Applications and tools settings
-tools:
-  apps:
-    - zsh
-    - git
-    - vscode
-    - python
-    - poetry
-    - docker
-    - vim
-    - figma
-    - inkscape
-    - gimp
-
-# Security settings
-security:
-  tool: "1pass"
+apps:
+  - python
+  - git
+  - streamio
