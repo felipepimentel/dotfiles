@@ -1,14 +1,15 @@
-name: "github"
+name: "git"
 dependencies:
   - "git"
   - "software-properties-common"
 config:
   install_type: "apt"
-  package_name: "gh"
-  check_installed: "command -v gh &> /dev/null"
-  get_installed_version: "gh --version | head -n 1 | awk '{print $3}'"
+  package_name: "git gh"
+  check_installed: "command -v git &> /dev/null && command -v gh &> /dev/null"
+  get_installed_version: "git --version | awk '{print $3}'"
 pre_install: |
   sudo apt-get install -y software-properties-common
   sudo add-apt-repository -y ppa:git-core/ppa
-post_install: "echo 'GitHub CLI installation completed.'"
 override_install: false
+config_files:
+  .gitconfig: "~/.gitconfig"

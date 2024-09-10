@@ -75,23 +75,57 @@ load_core_files() {
     done
 }
 
-# Create symlinks for extension files
+# Create symlinks for extension files and app-specific config files
 create_extension_symlinks() {
-    log_info "Creating symlinks for extension files"
+    log_info "Creating symlinks for extension files and app-specific configs"
     local dotfiles_dir="$1"
     local apps_dir="$dotfiles_dir/apps"
 
     for app_dir in "$apps_dir"/*; do
         if [ -d "$app_dir" ]; then
             local app_name=$(basename "$app_dir")
+            local config_file="$app_dir/config.yml"
+            
+            # Create symlink for extension file
             local extension_file="$app_dir/.${app_name}_extension.sh"
             if [ -f "$extension_file" ]; then
                 local target_file="$HOME/.${app_name}_extension.sh"
-                ln -sf "$extension_file" "$target_file"
-                log_info "Symlink created for $app_name extension: $target_file"
+                create_symlink "$extension_file" "$target_file"
+            fi
+            
+            # Create symlinks for app-specific config files
+            if [ -f "$config_file" ]; then
+                local config_files
+                config_files=$(yq e '.config_files' "$config_file")
+                if [ -n "$config_files" ] && [ "$config_files" != "null" ]; then
+                    while IFS=": " read -r source_file target_file; do
+                        source_file=$(echo "$source_file" | tr -d '"')
+                        target_file=$(echo "$target_file" | tr -d '"')
+                        local full_source_path="$app_dir/$source_file"
+                        local full_target_path="${target_file/#\~/$HOME}"
+                        if [ -f "$full_source_path" ]; then
+                            create_symlink "$full_source_path" "$full_target_path"
+                        else
+                            log_warning "Source file not found: $full_source_path"
+                        fi
+                    done <<< "$config_files"
+                fi
             fi
         fi
     done
+}
+
+create_symlink() {
+    local source_file="$1"
+    local target_file="$2"
+    local target_dir=$(dirname "$target_file")
+    
+    if [ ! -d "$target_dir" ]; then
+        mkdir -p "$target_dir"
+    fi
+    
+    ln -sf "$source_file" "$target_file"
+    log_info "Symlink created: $target_file -> $source_file"
 }
 
 # Install app

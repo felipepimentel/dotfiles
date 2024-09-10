@@ -39,7 +39,7 @@ main() {
     load_env_variables "$CONFIG_FILE"
     load_core_files "$SCRIPT_DIR/core"
 
-    # Create symlinks for extension files
+    # Create symlinks for extension files and app-specific configs
     create_extension_symlinks "$dotfiles_dir"
 
     # Get the list of apps to install from the config file
