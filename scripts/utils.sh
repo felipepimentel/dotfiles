@@ -1,26 +1,50 @@
 #!/bin/bash
 
-# Logging functions with colors
+# Colors and formatting
+BOLD='\033[1m'
+RESET='\033[0m'
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+MAGENTA='\033[0;35m'
+CYAN='\033[0;36m'
 
 log_info() {
-    echo -e "${BLUE}[INFO]${NC} $1"
+    echo -e "${BLUE}ℹ ${RESET}$1"
 }
 
 log_success() {
-    echo -e "${GREEN}[SUCCESS]${NC} $1"
+    echo -e "${GREEN}✔ ${RESET}$1"
 }
 
 log_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
+    echo -e "${YELLOW}⚠ ${RESET}$1"
 }
 
 log_error() {
-    echo -e "${RED}[ERROR]${NC} $1" >&2
+    echo -e "${RED}✖ ${RESET}$1" >&2
+}
+
+log_section() {
+    echo -e "\n${BOLD}${MAGENTA}$1${RESET}"
+    echo -e "${MAGENTA}$(printf '=%.0s' {1..50})${RESET}"
+}
+
+# Progress bar function
+progress_bar() {
+    local current=$1
+    local total=$2
+    local width=40
+    local percentage=$((current * 100 / total))
+    local completed=$((width * current / total))
+    local remaining=$((width - completed))
+
+    printf "\r[${CYAN}"
+    printf "%0.s█" $(seq 1 $completed)
+    printf "${RESET}"
+    printf "%0.s░" $(seq 1 $remaining)
+    printf "${RESET}] ${CYAN}%d%%${RESET}" $percentage
 }
 
 # Check required variables
@@ -75,44 +99,67 @@ load_core_files() {
     done
 }
 
-# Create symlinks for extension files and app-specific config files
-create_extension_symlinks() {
-    log_info "Creating symlinks for extension files and app-specific configs"
-    local dotfiles_dir="$1"
-    local apps_dir="$dotfiles_dir/apps"
+# Determine if an app needs installation
+needs_installation() {
+    local app_dir="$1"
+    local config_file="$app_dir/config.yml"
+    
+    if [ ! -f "$config_file" ]; then
+        return 1  # No config file, assume no installation needed
+    fi
+    
+    local install_type=$(yq e '.config.install_type' "$config_file")
+    if [ -n "$install_type" ] && [ "$install_type" != "null" ]; then
+        return 0  # Installation type specified, needs installation
+    else
+        return 1  # No installation type, only needs configuration
+    fi
+}
 
-    for app_dir in "$apps_dir"/*; do
-        if [ -d "$app_dir" ]; then
-            local app_name=$(basename "$app_dir")
-            local config_file="$app_dir/config.yml"
-            
-            # Create symlink for extension file
-            local extension_file="$app_dir/.${app_name}_extension.sh"
-            if [ -f "$extension_file" ]; then
-                local target_file="$HOME/.${app_name}_extension.sh"
-                create_symlink "$extension_file" "$target_file"
-            fi
-            
-            # Create symlinks for app-specific config files
-            if [ -f "$config_file" ]; then
-                local config_files
-                config_files=$(yq e '.config_files' "$config_file")
-                if [ -n "$config_files" ] && [ "$config_files" != "null" ]; then
-                    while IFS=": " read -r source_file target_file; do
-                        source_file=$(echo "$source_file" | tr -d '"')
-                        target_file=$(echo "$target_file" | tr -d '"')
-                        local full_source_path="$app_dir/$source_file"
-                        local full_target_path="${target_file/#\~/$HOME}"
-                        if [ -f "$full_source_path" ]; then
-                            create_symlink "$full_source_path" "$full_target_path"
-                        else
-                            log_warning "Source file not found: $full_source_path"
-                        fi
-                    done <<< "$config_files"
-                fi
-            fi
-        fi
+# Create symlinks for specified apps
+create_all_symlinks() {
+    local dotfiles_dir="$1"
+    local config_file="$dotfiles_dir/config/dotfiles_config.yml"
+    
+    log_info "Creating symlinks for specified apps"
+
+    local apps_to_process
+    mapfile -t apps_to_process < <(yq e '.apps[]' "$config_file")
+
+    for app_name in "${apps_to_process[@]}"; do
+        create_app_symlinks "$app_name" "$dotfiles_dir"
     done
+}
+
+# Create symlinks for a specific app
+create_app_symlinks() {
+    local app_name="$1"
+    local dotfiles_dir="$2"
+    local app_dir="$dotfiles_dir/apps/$app_name"
+    local config_file="$app_dir/config.yml"
+
+    log_info "Creating symlinks for app: $app_name"
+
+    if [ ! -f "$config_file" ]; then
+        log_warning "Config file not found for $app_name, skipping symlink creation"
+        return
+    fi
+
+    local config_files
+    config_files=$(yq e '.config_files' "$config_file")
+    if [ -n "$config_files" ] && [ "$config_files" != "null" ]; then
+        while IFS=": " read -r source_file target_file; do
+            source_file=$(echo "$source_file" | tr -d '"')
+            target_file=$(echo "$target_file" | tr -d '"')
+            local full_source_path="$app_dir/$source_file"
+            local full_target_path="${target_file/#\~/$HOME}"
+            if [ -f "$full_source_path" ]; then
+                create_symlink "$full_source_path" "$full_target_path"
+            else
+                log_warning "Source file not found: $full_source_path"
+            fi
+        done <<< "$config_files"
+    fi
 }
 
 create_symlink() {
@@ -146,40 +193,31 @@ install_app() {
     local check_installed=$(yq e '.config.check_installed' "$config_file")
     local pre_install=$(yq e '.pre_install' "$config_file")
     local post_install=$(yq e '.post_install' "$config_file")
-    local override_install=$(yq e '.override_install' "$config_file")
 
     if eval "$check_installed"; then
-        log_info "$app_name is already installed. Proceeding with installation/update."
+        log_info "$app_name is already installed. Proceeding with update/configuration."
     fi
 
     log_info "Running pre-installation steps for $app_name..."
     eval "$pre_install" || true
 
-    if [ "$override_install" == "true" ]; then
-        log_info "Using custom installation for $app_name"
-        bash "$app_dir/setup.sh" || {
-            log_error "Custom installation for $app_name failed"
+    if [ "$install_type" == "apt" ]; then
+        local package_name=$(yq e '.config.package_name' "$config_file")
+        log_info "Installing/updating $app_name using apt with package name $package_name"
+        sudo apt-get install -y $package_name || {
+            log_error "Failed to install $app_name using apt"
+            return 1
+        }
+    elif [ "$install_type" == "flatpak" ]; then
+        local package_name=$(yq e '.config.package_name' "$config_file")
+        log_info "Installing/updating $app_name using flatpak with package name $package_name"
+        flatpak install -y flathub $package_name || {
+            log_error "Failed to install $app_name using flatpak"
             return 1
         }
     else
-        if [ "$install_type" == "apt" ]; then
-            local package_name=$(yq e '.config.package_name' "$config_file")
-            log_info "Installing/updating $app_name using apt with package name $package_name"
-            sudo apt-get install -y $package_name || {
-                log_error "Failed to install $app_name using apt"
-                return 1
-            }
-        elif [ "$install_type" == "flatpak" ]; then
-            local package_name=$(yq e '.config.package_name' "$config_file")
-            log_info "Installing/updating $app_name using flatpak with package name $package_name"
-            flatpak install -y flathub $package_name || {
-                log_error "Failed to install $app_name using flatpak"
-                return 1
-            }
-        else
-            log_error "Unsupported install type: $install_type"
-            return 1
-        fi
+        log_error "Unsupported install type: $install_type"
+        return 1
     fi
 
     log_info "Running post-installation steps for $app_name..."

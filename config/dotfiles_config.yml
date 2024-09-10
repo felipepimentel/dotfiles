@@ -13,6 +13,7 @@ paths:
   log_file: "/home/pimentel/.dotfiles/install.log"
 
 apps:
+  - bash
   - python
   - git
   - streamio
