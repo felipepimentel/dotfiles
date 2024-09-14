@@ -215,6 +215,23 @@ install_app() {
             log_error "Failed to install $app_name using flatpak"
             return 1
         }
+    elif [ "$install_type" == "appimage" ]; then
+        local install_url=$(yq e '.config.install_url' "$config_file")
+        local install_path=$(yq e '.config.install_path' "$config_file")
+
+        log_info "Downloading AppImage from $install_url"
+        wget -O "$install_path" "$install_url" || {
+            log_error "Failed to download AppImage from $install_url"
+            return 1
+        }
+
+        # Give executable permissions to the AppImage
+        chmod +x "$install_path" || {
+            log_error "Failed to make $install_path executable"
+            return 1
+        }
+
+        log_success "AppImage for $app_name downloaded and made executable at $install_path"
     else
         log_error "Unsupported install type: $install_type"
         return 1

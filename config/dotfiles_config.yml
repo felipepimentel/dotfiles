@@ -17,3 +17,4 @@ apps:
   - python
   - git
   - streamio
+  - cursor
