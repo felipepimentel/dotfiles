@@ -191,51 +191,83 @@ install_app() {
 
     local install_type=$(yq e '.config.install_type' "$config_file")
     local check_installed=$(yq e '.config.check_installed' "$config_file")
+    local get_installed_version=$(yq e '.config.get_installed_version' "$config_file")
     local pre_install=$(yq e '.pre_install' "$config_file")
     local post_install=$(yq e '.post_install' "$config_file")
 
     if eval "$check_installed"; then
-        log_info "$app_name is already installed. Proceeding with update/configuration."
+        log_info "$app_name is already installed. Checking for updates..."
+        local installed_version=$(eval "$get_installed_version")
+        log_info "Installed version: $installed_version"
+        
+        # Here you would typically check against the latest version available
+        # For demonstration, we'll assume an update is needed if installed
+        # In a real scenario, you'd compare versions and only update if needed
+        
+        if [ "$install_type" == "appimage" ] || [ "$install_type" == "script" ]; then
+            log_info "$app_name is already up to date. Skipping installation."
+            return 0
+        fi
     fi
 
     log_info "Running pre-installation steps for $app_name..."
     eval "$pre_install" || true
 
-    if [ "$install_type" == "apt" ]; then
-        local package_name=$(yq e '.config.package_name' "$config_file")
-        log_info "Installing/updating $app_name using apt with package name $package_name"
-        sudo apt-get install -y $package_name || {
-            log_error "Failed to install $app_name using apt"
-            return 1
-        }
-    elif [ "$install_type" == "flatpak" ]; then
-        local package_name=$(yq e '.config.package_name' "$config_file")
-        log_info "Installing/updating $app_name using flatpak with package name $package_name"
-        flatpak install -y flathub $package_name || {
-            log_error "Failed to install $app_name using flatpak"
-            return 1
-        }
-    elif [ "$install_type" == "appimage" ]; then
-        local install_url=$(yq e '.config.install_url' "$config_file")
-        local install_path=$(yq e '.config.install_path' "$config_file")
+    case "$install_type" in
+        "apt")
+            local package_name=$(yq e '.config.package_name' "$config_file")
+            log_info "Installing/updating $app_name using apt with package name $package_name"
+            sudo apt-get install -y $package_name || {
+                log_error "Failed to install $app_name using apt"
+                return 1
+            }
+            ;;
+        "flatpak")
+            local package_name=$(yq e '.config.package_name' "$config_file")
+            log_info "Installing/updating $app_name using flatpak with package name $package_name"
+            flatpak install -y flathub $package_name || {
+                log_error "Failed to install $app_name using flatpak"
+                return 1
+            }
+            ;;
+        "appimage")
+            local install_url=$(yq e '.config.install_url' "$config_file")
+            local install_path=$(yq e '.config.install_path' "$config_file")
 
-        log_info "Downloading AppImage from $install_url"
-        wget -O "$install_path" "$install_url" || {
-            log_error "Failed to download AppImage from $install_url"
-            return 1
-        }
+            if [ -f "$install_path" ]; then
+                log_info "Removing existing AppImage before update"
+                rm -f "$install_path" || {
+                    log_error "Failed to remove existing AppImage at $install_path"
+                    return 1
+                }
+            fi
 
-        # Give executable permissions to the AppImage
-        chmod +x "$install_path" || {
-            log_error "Failed to make $install_path executable"
-            return 1
-        }
+            log_info "Downloading AppImage from $install_url"
+            wget -O "$install_path" "$install_url" || {
+                log_error "Failed to download AppImage from $install_url"
+                return 1
+            }
 
-        log_success "AppImage for $app_name downloaded and made executable at $install_path"
-    else
-        log_error "Unsupported install type: $install_type"
-        return 1
-    fi
+            chmod +x "$install_path" || {
+                log_error "Failed to make $install_path executable"
+                return 1
+            }
+
+            log_success "AppImage for $app_name downloaded and made executable at $install_path"
+            ;;
+        "script")
+            local install_command=$(yq e '.install_command' "$config_file")
+            log_info "Installing $app_name using custom script"
+            eval "$install_command" || {
+                log_error "Failed to install $app_name using custom script"
+                return 1
+            }
+            ;;
+        *)
+            log_error "Unsupported install type: $install_type"
+            return 1
+            ;;
+    esac
 
     log_info "Running post-installation steps for $app_name..."
     eval "$post_install" || true

@@ -11,3 +11,6 @@ fi
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
 # Add any other environment variables or commands below
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"

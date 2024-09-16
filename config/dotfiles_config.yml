@@ -18,3 +18,4 @@ apps:
   - git
   - streamio
   - cursor
+  - brew

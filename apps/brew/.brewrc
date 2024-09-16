@@ -1,0 +1,34 @@
+# Homebrew Configuration File (.brewrc)
+
+# Disable Homebrew analytics
+export HOMEBREW_NO_ANALYTICS=1
+
+# Auto-update before running brew install, brew upgrade or brew tap
+export HOMEBREW_AUTO_UPDATE_SECS=3600
+
+# Disable emoji in Homebrew's output
+export HOMEBREW_NO_EMOJI=1
+
+# Set Homebrew's temp directory
+export HOMEBREW_TEMP="$HOME/.brew_temp"
+
+# Do not automatically cleanup after installation
+export HOMEBREW_NO_INSTALL_CLEANUP=1
+
+# Use Homebrew's curl instead of system curl
+export HOMEBREW_FORCE_BREWED_CURL=1
+
+# Set Homebrew's Git mirror
+export HOMEBREW_BREW_GIT_REMOTE="https://github.com/Homebrew/brew.git"
+
+# Homebrew Cask configurations
+export HOMEBREW_CASK_OPTS="--appdir=/Applications"
+
+# Colorize Homebrew output
+export HOMEBREW_COLOR=1
+
+# Homebrew API token for increased API limits (replace with your token if you have one)
+# export HOMEBREW_GITHUB_API_TOKEN="your_token_here"
+
+# Add Homebrew's sbin to PATH
+export PATH="/home/linuxbrew/.linuxbrew/sbin:$PATH"

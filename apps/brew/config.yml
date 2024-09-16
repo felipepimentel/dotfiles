@@ -1,0 +1,49 @@
+name: "brew"
+description: "The Missing Package Manager for macOS (or Linux)"
+website: "https://brew.sh"
+dependencies:
+  - "git"
+  - "curl"
+config:
+  install_type: "script"
+  check_installed: "command -v brew >/dev/null 2>&1"
+  get_installed_version: "brew --version | head -n 1 | cut -d ' ' -f 2"
+  install_url: "https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh"
+  install_path:
+    macos: "/usr/local"
+    linux: "/home/linuxbrew/.linuxbrew"
+  env_vars:
+    macos:
+      - "export PATH=/usr/local/bin:$PATH"
+      - "export HOMEBREW_NO_ANALYTICS=1"
+    linux:
+      - 'eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"'
+      - "export HOMEBREW_NO_ANALYTICS=1"
+
+pre_install: |
+  echo "Preparing to install Homebrew..."
+  if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    sudo apt-get update
+    sudo apt-get install -y build-essential procps curl file git
+  fi
+
+install_command: |
+  /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+post_install: |
+  echo "Homebrew installation completed."
+  if [[ "$OSTYPE" == "linux-gnu"* ]]; then
+    test -d ~/.linuxbrew && eval "$(~/.linuxbrew/bin/brew shellenv)"
+    test -d /home/linuxbrew/.linuxbrew && eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+    test -r ~/.bash_profile && echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.bash_profile
+    echo "eval \"\$($(brew --prefix)/bin/brew shellenv)\"" >> ~/.profile
+  fi
+  echo "Running initial brew update..."
+  brew update
+  echo "Installing common formulae..."
+  brew install gcc cmake
+
+config_files:
+  ".brewrc": "~/.brewrc"
+
+override_install: false
