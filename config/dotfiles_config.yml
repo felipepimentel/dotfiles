@@ -19,3 +19,4 @@ apps:
   - streamio
   - cursor
   - brew
+  - warp
