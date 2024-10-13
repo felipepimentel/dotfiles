@@ -2,11 +2,23 @@ name: "neovim"
 dependencies:
   - "git"
   - "make"
+  - "curl"  # Adicionando curl como dependência
 config:
   install_type: "curl"
-  package_name: "neovim"
-  check_installed: "command -v nvim &> /dev/null"
-  get_installed_version: "nvim --version | head -n 1 | awk '{print $2}'"
-pre_install: "echo 'Preparing to install Neovim...'"
-post_install: "echo 'Neovim installation completed.'"
+  install_url: "https://github.com/neovim/neovim/releases/download/stable/nvim.appimage"  # URL para baixar a versão AppImage do Neovim
+  install_path: "/usr/local/bin/nvim"  # Caminho onde o binário será salvo
+  check_installed: "command -v nvim &> /dev/null"  # Comando para verificar se o Neovim está instalado
+  get_installed_version: "nvim --version | head -n 1 | awk '{print $2}'"  # Comando para obter a versão instalada
+pre_install: |
+  echo 'Preparing to install Neovim...'
+  # Remover versões antigas se necessário
+  if [ -f "/usr/local/bin/nvim" ]; then
+    echo 'Removing old version of Neovim...'
+    rm -f /usr/local/bin/nvim
+  fi
+post_install: |
+  echo 'Neovim installation completed.'
+  echo 'Making Neovim executable...'
+  chmod +x /usr/local/bin/nvim
+  echo 'Neovim is ready to use!'
 override_install: false
