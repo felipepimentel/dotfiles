@@ -75,18 +75,10 @@ if [[ -f "$HOME/Workspace/loomia/node_modules/.pnpm/tabtab@2.2.2/node_modules/ta
     source "$HOME/Workspace/loomia/node_modules/.pnpm/tabtab@2.2.2/node_modules/tabtab/.completions/electron-forge.zsh"
 fi
 
-# Warp Terminal configuration
-if [[ $TERM_PROGRAM = "WarpTerminal" ]]; then
-    if [[ -z "$WARP_BOOTSTRAPPED" ]]; then
-        export WARP_HONOR_PS1=0
-        setopt hist_ignore_space
-        unsetopt ZLE
-        WARP_IS_SUBSHELL=1
-        WARP_SESSION_ID="$(command -p date +%s)$RANDOM"
-        _hostname=$(command -pv hostname >/dev/null 2>&1 && command -p hostname 2>/dev/null || command -p uname -n)
-        _user=$(command -pv whoami >/dev/null 2>&1 && command -p whoami 2>/dev/null || echo $USER)
-        _msg=$(printf '{"hook": "InitShell", "value": {"session_id": "%s", "shell": "zsh", "user": "%s", "hostname": "%s", "is_subshell": true}}' "$WARP_SESSION_ID" "$_user" "$_hostname" | command -p od -An -v -tx1 | command -p tr -d " \n")
-        printf '\x1b\x50\x24\x64%s\x9c' "$_msg"
-        unset _hostname _user _msg
-    fi
-fi
+# bash and zsh
+# if [[ $TERM_PROGRAM != "WarpTerminal" ]]; then
+# ##### WHAT YOU WANT TO DISABLE FOR WARP - BELOW
+#     # Unsupported plugin/prompt code here, i.e.
+#     test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
+# ##### WHAT YOU WANT TO DISABLE FOR WARP - ABOVE
+# fi
