@@ -4,6 +4,30 @@
 DOTFILES_APPS="$HOME/.dotfiles/apps"
 DOTFILES_CONFIG="$HOME/.dotfiles/config/dotfiles_config.yml"
 
+# Configuração do Oh My Zsh (carregado condicionalmente)
+# Zsh config
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# Load Oh My Zsh
+source $ZSH/oh-my-zsh.sh
+
+# Load Powerlevel10k config
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
+
+# Path configs
+path=(
+  $HOME/.local/bin
+  $HOME/.poetry/bin
+  /usr/local/bin
+  /usr/local/go/bin
+  $path
+)
+export PATH
+
+
 # Função para carregar extensões
 load_zsh_extensions() {
     local app_name=$1
@@ -54,27 +78,28 @@ else
 fi
 
 # pnpm
-export PNPM_HOME="/home/pimentel/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME:"*) ;;
-  *) export PATH="$PNPM_HOME:$PATH" ;;
-esac
+# export PNPM_HOME="/home/pimentel/.local/share/pnpm"
+# case ":$PATH:" in
+#   *":$PNPM_HOME:"*) ;;
+#   *) export PATH="$PNPM_HOME:$PATH" ;;
+# esac
 # pnpm end
 
 # tabtab source for electron-forge package
 # uninstall by removing these lines or running `tabtab uninstall electron-forge`
-[[ -f /home/pimentel/Workspace/loomia/node_modules/.pnpm/tabtab@2.2.2/node_modules/tabtab/.completions/electron-forge.zsh ]] && . /home/pimentel/Workspace/loomia/node_modules/.pnpm/tabtab@2.2.2/node_modules/tabtab/.completions/electron-forge.zsh
+# [[ -f /home/pimentel/Workspace/loomia/node_modules/.pnpm/tabtab@2.2.2/node_modules/tabtab/.completions/electron-forge.zsh ]] && . /home/pimentel/Workspace/loomia/node_modules/.pnpm/tabtab@2.2.2/node_modules/tabtab/.completions/electron-forge.zsh
 
-# Adicionar condicional para evitar erros com o Warp no subshell
-if [ -z "$WARP_BOOTSTRAPPED" ]; then
-    export WARP_HONOR_PS1=0
-    setopt hist_ignore_space
-    unsetopt ZLE
-    WARP_IS_SUBSHELL=1
-    WARP_SESSION_ID="$(command -p date +%s)$RANDOM"
-    _hostname=$(command -pv hostname >/dev/null 2>&1 && command -p hostname 2>/dev/null || command -p uname -n)
-    _user=$(command -pv whoami >/dev/null 2>&1 && command -p whoami 2>/dev/null || echo $USER)
-    _msg=$(printf "{\"hook\": \"InitShell\", \"value\": {\"session_id\": \"$WARP_SESSION_ID\", \"shell\": \"zsh\", \"user\": \"$_user\", \"hostname\": \"$_hostname\", \"is_subshell\": true}}" | command -p od -An -v -tx1 | command -p tr -d " \n")
-    printf '\x1b\x50\x24\x64%s\x9c' "$_msg"
-    unset _hostname _user _msg
-fi
+# if [[ $TERM_PROGRAM = "WarpTerminal" ]]; then
+#     if [ -z "$WARP_BOOTSTRAPPED" ]; then
+#             export WARP_HONOR_PS1=0
+#             setopt hist_ignore_space
+#             unsetopt ZLE
+#             WARP_IS_SUBSHELL=1
+#             WARP_SESSION_ID="$(command -p date +%s)$RANDOM"
+#             _hostname=$(command -pv hostname >/dev/null 2>&1 && command -p hostname 2>/dev/null || command -p uname -n)
+#             _user=$(command -pv whoami >/dev/null 2>&1 && command -p whoami 2>/dev/null || echo $USER)
+#             _msg=$(printf "{\"hook\": \"InitShell\", \"value\": {\"session_id\": \"$WARP_SESSION_ID\", \"shell\": \"zsh\", \"user\": \"$_user\", \"hostname\": \"$_hostname\", \"is_subshell\": true}}" | command -p od -An -v -tx1 | command -p tr -d " \n")
+#             printf '\x1b\x50\x24\x64%s\x9c' "$_msg"
+#             unset _hostname _user _msg
+#     fi
+# fi

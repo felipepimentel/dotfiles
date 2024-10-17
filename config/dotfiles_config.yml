@@ -16,7 +16,4 @@ apps:
   - bash
   - python
   - git
-  - streamio
   - cursor
-  - brew
-  - warp
