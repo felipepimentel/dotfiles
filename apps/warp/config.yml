@@ -3,10 +3,10 @@ dependencies:
   - "wget"
   - "dpkg"
 config:
-  install_type: "script"
-  install_url: "https://releases.warp.dev/download/linux-deb"
+  install_type: "deb"
+  install_url: "https://app.warp.dev/download?package=deb"
   install_command: |
-    wget -O /tmp/warp.deb "https://releases.warp.dev/download/linux-deb" && \
+    wget -O /tmp/warp.deb "https://app.warp.dev/download?package=deb" && \
     sudo dpkg -i /tmp/warp.deb && \
     sudo apt-get install -f -y
   check_installed: "[ -x $(command -v warp) ]"

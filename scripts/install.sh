@@ -152,6 +152,26 @@ install_app() {
             }
             log_success "AppImage for $app_name downloaded and made executable at $install_path"
             ;;
+        "deb")
+            local install_command
+            install_command=$(yq e '.config.install_command' "$config_file")
+            log_info "Downloading and installing .deb package for $app_name"
+            eval "$install_command" || {
+                log_error "Failed to install $app_name using .deb package"
+                return 1
+            }
+            log_success "$app_name installed successfully using .deb package"
+            ;;
+        "script")
+            local install_command
+            install_command=$(yq e '.config.install_command' "$config_file")
+            log_info "Running install command for $app_name"
+            eval "$install_command" || {
+                log_error "Failed to install $app_name using script"
+                return 1
+            }
+            log_success "$app_name installed successfully using script"
+            ;;
         *)
             log_error "Unsupported install type: $install_type"
             return 1
@@ -164,6 +184,8 @@ install_app() {
     log_success "$app_name installed/updated successfully"
     return 0
 }
+
+
 
 # Process each app
 process_app() {
