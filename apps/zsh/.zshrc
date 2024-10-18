@@ -74,11 +74,3 @@ fi
 if [[ -f "$HOME/Workspace/loomia/node_modules/.pnpm/tabtab@2.2.2/node_modules/tabtab/.completions/electron-forge.zsh" ]]; then
     source "$HOME/Workspace/loomia/node_modules/.pnpm/tabtab@2.2.2/node_modules/tabtab/.completions/electron-forge.zsh"
 fi
-
-# bash and zsh
-# if [[ $TERM_PROGRAM != "WarpTerminal" ]]; then
-# ##### WHAT YOU WANT TO DISABLE FOR WARP - BELOW
-#     # Unsupported plugin/prompt code here, i.e.
-#     test -e "${HOME}/.iterm2_shell_integration.zsh" && source "${HOME}/.iterm2_shell_integration.zsh" || true
-# ##### WHAT YOU WANT TO DISABLE FOR WARP - ABOVE
-# fi

@@ -6,6 +6,7 @@ user:
 # System settings
 system:
   preferred_shell: "zsh"
+  package_manager: "apt"
 
 # Path settings
 paths:
@@ -13,6 +14,8 @@ paths:
   log_file: "/home/pimentel/.dotfiles/install.log"
 
 apps:
+  - fuse
+  - brew
   - bash
   - python
   - git

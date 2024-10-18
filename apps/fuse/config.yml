@@ -1,0 +1,10 @@
+name: "fuse"
+dependencies:
+  - "wget"
+  - "modprobe"
+config:
+  install_type: "script"
+  install_command: |
+    sudo apt update && \
+    sudo apt install libfuse2 -y && \
+    sudo modprobe fuse
