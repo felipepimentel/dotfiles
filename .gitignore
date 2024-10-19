@@ -39,3 +39,6 @@ dist/
 install.log
 .installation_control
 .dotfiles_state.yml
+
+
+broken_symlinks.log
