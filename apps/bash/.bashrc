@@ -11,17 +11,14 @@ fi
 # Aliases
 alias ll='ls -la'
 alias l='ls -CF'
-
-# User specific aliases and functions
-alias update='sudo apt update && sudo apt upgrade'
+alias update='sudo apt update && sudo apt upgrade -y'
 alias cls='clear'
 
-# Set a fancy prompt (non-color, unless we know we "want" color)
+# Fancy prompt settings with colors
 case "$TERM" in
     xterm-color|*-256color) color_prompt=yes;;
 esac
 
-# Enable color prompt
 if [ "$color_prompt" = yes ]; then
     PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
 else
@@ -30,35 +27,35 @@ fi
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
+    xterm*|rxvt*)
+        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+        ;;
+    *)
+        ;;
 esac
 
-# Add an "alert" alias for long running commands.  Use like so:
-#   sleep 10; alert
+# Add an "alert" alias for long running commands.
 alias alert='notify-send --urgency=low -i "$([ $? = 0 ] && echo terminal || echo error)" "$(history | tail -n1 | sed -e '\''s/^\s*[0-9]\+\s*//;s/[;&|]\s*alert$//'\'')"'
 
 # Path settings
 export PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
+# .NET SDK settings (to use ~/.dotnet as the main .NET directory)
+export DOTNET_ROOT="$HOME/.dotnet"
+if [[ ":$PATH:" != *":$DOTNET_ROOT:"* ]]; then
+    export PATH="$DOTNET_ROOT:$DOTNET_ROOT/tools:$PATH"
+fi
+
 # History settings
 HISTSIZE=1000
 HISTFILESIZE=2000
-
-# Append to the history file, don't overwrite it
-shopt -s histappend
-
-# Enable persistent history across shell sessions
+shopt -s histappend  # Append to the history file, don't overwrite it
 PROMPT_COMMAND="history -a; history -c; history -r; $PROMPT_COMMAND"
 
 # Auto-correct typos in path names when using 'cd'
 shopt -s cdspell
 
-# Enable programmable completion features (you don't need to enable this,
-# if it's already enabled in /etc/bash.bashrc and /etc/profile.d/).
+# Enable bash completion features (already in /etc/bash.bashrc)
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
     . /usr/share/bash-completion/bash_completion
@@ -66,4 +63,6 @@ if ! shopt -oq posix; then
     . /etc/bash_completion
   fi
 fi
+
+# Cargo environment (Rust)
 . "$HOME/.cargo/env"

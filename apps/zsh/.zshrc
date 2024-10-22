@@ -1,23 +1,9 @@
-# apps/zsh/zshrc.sh
-
-# Path for apps and configuration files
-DOTFILES_APPS="$HOME/.dotfiles/apps"
-DOTFILES_CONFIG="$HOME/.dotfiles/config/dotfiles_config.yml"
-
-# Oh My Zsh configuration
-export ZSH="$HOME/.oh-my-zsh"
-ZSH_THEME="powerlevel10k/powerlevel10k"
-
-# Load Oh My Zsh
-if [[ -d "$ZSH" ]]; then
-    source "$ZSH/oh-my-zsh.sh"
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
-
-# Load Powerlevel10k configuration
-[[ -f ~/.p10k.zsh ]] && source ~/.p10k.zsh
-
-# Plugins
-plugins=(git zsh-syntax-highlighting zsh-autosuggestions)
 
 # Path configuration
 typeset -U path
@@ -29,41 +15,6 @@ path+=(
 )
 export PATH
 
-# Function to load Zsh extensions
-load_zsh_extensions() {
-    local app_name=$1
-    local app_dir="$DOTFILES_APPS/$app_name"
-    
-    if [[ -d "$app_dir" ]]; then
-        for extension_file in "$app_dir"/*.zsh(N); do
-            [[ -f "$extension_file" ]] && source "$extension_file"
-        done
-    fi
-}
-
-# Function to read apps from the configuration file
-read_apps_from_config() {
-    if [[ -f "$DOTFILES_CONFIG" ]] && command -v yq &> /dev/null; then
-        yq e '.apps[]' "$DOTFILES_CONFIG"
-    else
-        return 1
-    fi
-}
-
-# Load extensions from apps listed in the configuration file
-apps=$(read_apps_from_config)
-
-if [[ $? -eq 0 ]]; then
-    while IFS= read -r app; do
-        load_zsh_extensions "$app"
-    done <<< "$apps"
-else
-    default_apps=(git neovim)
-    for app in "${default_apps[@]}"; do
-        load_zsh_extensions "$app"
-    done
-fi
-
 # PNPM configuration
 export PNPM_HOME="$HOME/.local/share/pnpm"
 if [[ ":$PATH:" != *":$PNPM_HOME:"* ]]; then
@@ -71,9 +22,42 @@ if [[ ":$PATH:" != *":$PNPM_HOME:"* ]]; then
 fi
 
 # Tabtab source for electron-forge package
-if [[ -f "$HOME/Workspace/loomia/node_modules/.pnpm/tabtab@2.2.2/node_modules/tabtab/.completions/electron-forge.zsh" ]]; then
-    source "$HOME/Workspace/loomia/node_modules/.pnpm/tabtab@2.2.2/node_modules/tabtab/.completions/electron-forge.zsh"
+TABTAB_COMPLETION="$HOME/Workspace/loomia/node_modules/.pnpm/tabtab@2.2.2/node_modules/tabtab/.completions/electron-forge.zsh"
+if [[ -f "$TABTAB_COMPLETION" ]]; then
+    source "$TABTAB_COMPLETION"
 fi
 
-export PATH=$PATH:$HOME/dotnet
-export DOTNET_ROOT=$HOME/dotnet
+# .NET configuration
+export DOTNET_ROOT="$HOME/.dotnet"
+if [[ ":$PATH:" != *":$DOTNET_ROOT:"* ]]; then
+    export PATH="$PATH:$DOTNET_ROOT"
+fi
+
+if [[ ":$PATH:" != *":$DOTNET_ROOT/tools:"* ]]; then
+    export PATH="$PATH:$DOTNET_ROOT/tools"
+fi
+
+# Oh My Zsh configuration
+export ZSH="$HOME/.oh-my-zsh"
+
+# Set Zsh theme (change this to any theme of your choice, such as "agnoster", "robbyrussell", etc.)
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+# Enable plugins (you can add or remove plugins as needed)
+plugins=(
+  git
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+)
+
+# Source Oh My Zsh
+if [ -f "$ZSH/oh-my-zsh.sh" ]; then
+    source $ZSH/oh-my-zsh.sh
+fi
+
+# Custom Aliases (add your aliases here)
+alias ll='ls -la'
+alias gs='git status'
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
