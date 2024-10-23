@@ -64,3 +64,10 @@ alias gs='git status'
 
 # PKG_CONFIG_PATH configuration
 export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
+. "/home/pimentel/.deno/env"
+# bun completions
+[ -s "/home/pimentel/.bun/_bun" ] && source "/home/pimentel/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"

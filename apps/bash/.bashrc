@@ -66,3 +66,4 @@ fi
 
 # Cargo environment (Rust)
 . "$HOME/.cargo/env"
+. "/home/pimentel/.deno/env"
