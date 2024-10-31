@@ -2,8 +2,17 @@
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-    source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+        source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
+
+# Function to add paths to PATH if they are not already present
+add_to_path() {
+        for dir in "$@"; do
+                if [[ ":$PATH:" != *":$dir:"* ]]; then
+                        PATH="$dir:$PATH"
+                fi
+        done
+}
 
 # Path configuration
 typeset -U path
@@ -17,9 +26,7 @@ export PATH
 
 # PNPM configuration
 export PNPM_HOME="$HOME/.local/share/pnpm"
-if [[ ":$PATH:" != *":$PNPM_HOME:"* ]]; then
-        export PATH="$PNPM_HOME:$PATH"
-fi
+add_to_path "$PNPM_HOME"
 
 # Tabtab source for electron-forge package
 TABTAB_COMPLETION="$HOME/Workspace/loomia/node_modules/.pnpm/tabtab@2.2.2/node_modules/tabtab/.completions/electron-forge.zsh"
@@ -29,13 +36,7 @@ fi
 
 # .NET configuration
 export DOTNET_ROOT="$HOME/.dotnet"
-if [[ ":$PATH:" != *":$DOTNET_ROOT:"* ]]; then
-        export PATH="$PATH:$DOTNET_ROOT"
-fi
-
-if [[ ":$PATH:" != *":$DOTNET_ROOT/tools:"* ]]; then
-        export PATH="$PATH:$DOTNET_ROOT/tools"
-fi
+add_to_path "$DOTNET_ROOT" "$DOTNET_ROOT/tools"
 
 # Oh My Zsh configuration
 export ZSH="$HOME/.oh-my-zsh"
@@ -45,9 +46,9 @@ ZSH_THEME="powerlevel10k/powerlevel10k"
 
 # Enable plugins (you can add or remove plugins as needed)
 plugins=(
-    git
-    zsh-autosuggestions
-    zsh-syntax-highlighting
+        git
+        zsh-autosuggestions
+        zsh-syntax-highlighting
 )
 
 # Source Oh My Zsh
@@ -65,9 +66,14 @@ alias gs='git status'
 # PKG_CONFIG_PATH configuration
 export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
 . "/home/pimentel/.deno/env"
+
 # bun completions
 [ -s "/home/pimentel/.bun/_bun" ] && source "/home/pimentel/.bun/_bun"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
-export PATH="$BUN_INSTALL/bin:$PATH"
+add_to_path "$BUN_INSTALL/bin"
+
+add_to_path "$HOME/.pyenv/bin"
+eval "$(pyenv init --path)"
+eval "$(pyenv init -)"
