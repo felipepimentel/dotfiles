@@ -77,3 +77,5 @@ add_to_path "$BUN_INSTALL/bin"
 add_to_path "$HOME/.pyenv/bin"
 eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
+
+export PYTHONPATH=$(poetry env info --path)/bin/python
