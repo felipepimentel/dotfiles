@@ -1,3 +1,22 @@
+# dynamic load python env
+autoload -U add-zsh-hook
+
+# Função para ajustar dinamicamente o PYTHONPATH ao entrar em um diretório
+function update_pythonpath() {
+  if [[ -f pyproject.toml ]]; then
+    export PYTHONPATH=$(poetry env info --path)/bin/python
+  else
+    unset PYTHONPATH
+  fi
+}
+
+# Adiciona a função ao hook de troca de diretório
+add-zsh-hook chpwd update_pythonpath
+
+# Executa a função ao abrir o terminal (para configurar no diretório inicial)
+update_pythonpath
+
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -78,4 +97,8 @@ add_to_path "$HOME/.pyenv/bin"
 eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
 
-export PYTHONPATH=$(poetry env info --path)/bin/python
+# export PYTHONPATH=$(poetry env info --path)/bin/python
+
+export GOROOT=/usr/local/go
+export GOPATH=$HOME/go
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
