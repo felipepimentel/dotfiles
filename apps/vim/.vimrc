@@ -87,17 +87,16 @@ set pumheight=10
 " Set pumwidth to 60
 set pumwidth=60
 
-" Set pumblend to 10
-set pumblend=10
-
-" Set pumvisible to true
-set pumvisible
-
-" Set pumtransparent to true
-set pumtransparent
-
-" Set winblend to 10
-set winblend=10
+if has('nvim')
+    " Set pumblend to 10
+    set pumblend=10
+    " Set pumvisible to true
+    set pumvisible
+    " Set pumtransparent to true
+    set pumtransparent
+    " Set winblend to 10
+    set winblend=10
+endif
 
 " Set wildmode to list:longest
 set wildmode=list:longest
