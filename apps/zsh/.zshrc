@@ -1,104 +1,122 @@
-# dynamic load python env
+# ===========================
+# Dynamic Python Environment
+# ===========================
 autoload -U add-zsh-hook
 
-# Função para ajustar dinamicamente o PYTHONPATH ao entrar em um diretório
+# Function to dynamically adjust PYTHONPATH based on the presence of pyproject.toml
 function update_pythonpath() {
   if [[ -f pyproject.toml ]]; then
-    export PYTHONPATH=$(poetry env info --path)/bin/python
+    export PYTHONPATH=$(poetry env info --path 2>/dev/null)/bin/python
   else
     unset PYTHONPATH
   fi
 }
 
-# Adiciona a função ao hook de troca de diretório
+# Hook to call the function whenever the directory changes
 add-zsh-hook chpwd update_pythonpath
 
-# Executa a função ao abrir o terminal (para configurar no diretório inicial)
+# Execute the function on terminal startup to configure the initial directory
 update_pythonpath
 
-
-# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
-# Initialization code that may require console input (password prompts, [y/n]
-# confirmations, etc.) must go above this block; everything else may go below.
+# ===========================
+# Powerlevel10k Configuration
+# ===========================
+# Enable Powerlevel10k instant prompt
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
-        source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
-# Function to add paths to PATH if they are not already present
+# ===========================
+# Path Management
+# ===========================
+# Function to add directories to PATH if not already present
 add_to_path() {
-        for dir in "$@"; do
-                if [[ ":$PATH:" != *":$dir:"* ]]; then
-                        PATH="$dir:$PATH"
-                fi
-        done
+  for dir in "$@"; do
+    if [[ ":$PATH:" != *":$dir:"* ]]; then
+      PATH="$dir:$PATH"
+    fi
+  done
 }
 
-# Path configuration
-typeset -U path
-path+=(
-        $HOME/.local/bin
-        $HOME/.poetry/bin
-        /usr/local/bin
-        /usr/local/go/bin
-)
-export PATH
+# Configure PATH
+add_to_path \
+  "$HOME/.local/bin" \
+  "$HOME/.poetry/bin" \
+  "/usr/local/bin" \
+  "/usr/local/go/bin"
 
-# PNPM configuration
+# ===========================
+# PNPM Configuration
+# ===========================
 export PNPM_HOME="$HOME/.local/share/pnpm"
 add_to_path "$PNPM_HOME"
 
-# Tabtab source for electron-forge package
+# ===========================
+# Tabtab Configuration
+# ===========================
 TABTAB_COMPLETION="$HOME/Workspace/loomia/node_modules/.pnpm/tabtab@2.2.2/node_modules/tabtab/.completions/electron-forge.zsh"
 if [[ -f "$TABTAB_COMPLETION" ]]; then
-        source "$TABTAB_COMPLETION"
+  source "$TABTAB_COMPLETION"
 fi
 
-# .NET configuration
+# ===========================
+# .NET Configuration
+# ===========================
 export DOTNET_ROOT="$HOME/.dotnet"
 add_to_path "$DOTNET_ROOT" "$DOTNET_ROOT/tools"
 
-# Oh My Zsh configuration
+# ===========================
+# Oh My Zsh Configuration
+# ===========================
 export ZSH="$HOME/.oh-my-zsh"
-
-# Set Zsh theme (change this to any theme of your choice, such as "agnoster", "robbyrussell", etc.)
 ZSH_THEME="powerlevel10k/powerlevel10k"
 
-# Enable plugins (you can add or remove plugins as needed)
+# Enable plugins
 plugins=(
-        git
-        zsh-autosuggestions
-        zsh-syntax-highlighting
+  git
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+  poetry
 )
 
 # Source Oh My Zsh
-if [ -f "$ZSH/oh-my-zsh.sh" ]; then
-        source $ZSH/oh-my-zsh.sh
+if [[ -f "$ZSH/oh-my-zsh.sh" ]]; then
+  source "$ZSH/oh-my-zsh.sh"
 fi
 
-# Custom Aliases (add your aliases here)
+# ===========================
+# Custom Aliases
+# ===========================
 alias ll='ls -la'
 alias gs='git status'
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+# ===========================
+# Powerlevel10k Prompt Configuration
+# ===========================
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-# PKG_CONFIG_PATH configuration
+# ===========================
+# PKG_CONFIG_PATH
+# ===========================
 export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
-. "/home/pimentel/.deno/env"
 
-# bun completions
-[ -s "/home/pimentel/.bun/_bun" ] && source "/home/pimentel/.bun/_bun"
-
-# bun
+# ===========================
+# Bun Configuration
+# ===========================
+[ -s "$HOME/.bun/_bun" ] && source "$HOME/.bun/_bun"
 export BUN_INSTALL="$HOME/.bun"
 add_to_path "$BUN_INSTALL/bin"
 
+# ===========================
+# Pyenv Configuration
+# ===========================
 add_to_path "$HOME/.pyenv/bin"
 eval "$(pyenv init --path)"
 eval "$(pyenv init -)"
 
-# export PYTHONPATH=$(poetry env info --path)/bin/python
-
+# ===========================
+# Go Configuration
+# ===========================
 export GOROOT=/usr/local/go
 export GOPATH=$HOME/go
-export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
+add_to_path "$GOROOT/bin" "$GOPATH/bin"
