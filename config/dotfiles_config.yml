@@ -14,9 +14,6 @@ paths:
   log_file: "/home/pimentel/.dotfiles/install.log"
 
 apps:
-  - fuse
   - brew
   - bash
   - python
-  - git
-  - cursor

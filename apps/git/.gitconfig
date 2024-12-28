@@ -3,3 +3,5 @@
 	name = Felipe Pimentel
 [core]
 	editor = vim
+[pull]
+	rebase = true
