@@ -122,3 +122,5 @@ export GOPATH=$HOME/go
 add_to_path "$GOROOT/bin" "$GOPATH/bin"
 
 eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+
+[[ "$TERM_PROGRAM" == "vscode" ]] && unset ARGV0
