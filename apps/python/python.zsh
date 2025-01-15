@@ -1,7 +1,12 @@
 # Adicionar o Poetry ao shell
 export POETRY_SHELL=zsh
-export PATH="$HOME/.poetry/bin:$PATH"
+if command -v poetry >/dev/null 2>&1; then
+  export PATH="$HOME/.poetry/bin:$PATH"
+fi
 
-export PATH="$HOME/.pyenv/bin:$PATH"
-eval "$(pyenv init --path)"
-eval "$(pyenv init -)"
+# Adicionar o Pyenv ao shell
+if command -v pyenv >/dev/null 2>&1; then
+  export PATH="$HOME/.pyenv/bin:$PATH"
+  eval "$(pyenv init --path)"
+  eval "$(pyenv init -)"
+fi

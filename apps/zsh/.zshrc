@@ -107,12 +107,15 @@ export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
 export BUN_INSTALL="$HOME/.bun"
 add_to_path "$BUN_INSTALL/bin"
 
-# ===========================
-# Pyenv Configuration
-# ===========================
-add_to_path "$HOME/.pyenv/bin"
-eval "$(pyenv init --path)"
-eval "$(pyenv init -)"
+# # ===========================
+# # Pyenv Configuration
+# # ===========================
+# if command -v pyenv >/dev/null 2>&1; then
+#   export PATH="$HOME/.pyenv/bin:$PATH"
+#   eval "$(pyenv init --path)"
+#   eval "$(pyenv init -)"
+# fi
+
 
 # ===========================
 # Go Configuration
